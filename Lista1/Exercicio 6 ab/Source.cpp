@@ -36,7 +36,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int exercicio8();
 
 // Dimens�es da janela (pode ser alterado em tempo de execu��o)
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 600, HEIGHT = 600;
 
 // Fun��o MAIN
 int main()
@@ -58,7 +58,7 @@ int main()
 //#endif
 
 	// Cria��o da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Triangulo Colorido! -- Gabriel", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Exercico ¨- A / B! -- Gabriel", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da fun��o de callback para a janela GLFW
@@ -118,10 +118,14 @@ int main()
 
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
 
+		/*//OCTAGONO / Exercicio A)
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 10);
+		glDrawArrays(GL_POINTS, 0, 9);*/
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_POINTS, 0, 3);
-
+		/*//PENTAGONO / Exercicio B)
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
+		glDrawArrays(GL_POINTS, 0, 6);*/
+		
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
 
@@ -152,9 +156,29 @@ int exercicio8()
 	// Pode ser arazenado em um VBO �nico ou em VBOs separados
 	GLfloat vertices[] = {
 		//x   y    z    r    g    b
-		0.0, 0.5, 0.0, 1.0, 0.0, 0.0, //v0 
-		 -0.5, -0.5, 0.0, 0.0, 1.0, 0.0, //v1 
-		 0.5, -0.5, 0.0, 0.0, 0.0, 1.0, //v2 	
+
+		/*//OCTAGONO / Exercicio A)
+		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, //M
+		-0.2, 0.6, 0.0, 1.0, 1.0, 1.0, //J
+		-0.6, 0.2, 0.0, 1.0, 0.0, 1.0, //K
+		-0.6, -0.2, 0.0, 1.0, 1.0, 1.0, //L  
+		-0.2, -0.6, 0.0, 0.0, 1.0, 1.0, //E
+		0.2, -0.6, 0.0, 1.0, 1.0, 1.0, //F
+		0.6, -0.2, 0.0, 0.5, 0.5, 0.5, //G
+		0.6, 0.2, 0.0, 1.0, 1.0, 1.0, //H
+		0.2, 0.6, 0.0, 1.0, 1.0, 0.0, //I
+		-0.2, 0.6, 0.0, 1.0, 1.0, 1.0, //J*/
+
+		/*//PENTAGONO / Exercicio B)
+		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, //J
+		0.0, 0.6, 0.0, 1.0, 1.0, 1.0, //E
+		-0.6, 0.2, 0.0, 1.0, 1.0, 1.0, //F
+		-0.4, -0.5, 0.0, 1.0, 1.0, 1.0, //H
+		0.4, -0.5, 0.0, 1.0, 1.0, 1.0, //I
+		0.6, 0.2, 0.0, 1.0, 1.0, 1.0, //G
+		0.0, 0.6, 0.0, 1.0, 1.0, 1.0 //E*/
+	
+
 	};
 
 	GLuint VBO, VAO;
