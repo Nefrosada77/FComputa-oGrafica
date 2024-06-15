@@ -10,6 +10,7 @@
                 "${workspaceFolder}/Common/include",
                 "${workspaceFolder}/Dependencies/glm"
 
+
             ],
             "defines": [
                 "_DEBUG",

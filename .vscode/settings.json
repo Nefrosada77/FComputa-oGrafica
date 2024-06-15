@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "vector": "cpp"
+        "windows.h": "c",
+        "string.h": "c",
+        "glad.h": "c"
     }
 }

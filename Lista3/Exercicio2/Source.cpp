@@ -27,13 +27,13 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include "Sprite.h"
 
 // Prot�tipo da fun��o de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-// Prot�tipos das fun��es
-int exercicio8();
+// Protótipos das funções
+
 
 // Dimens�es da janela (pode ser alterado em tempo de execu��o)
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -58,7 +58,7 @@ int main()
 //#endif
 
 	// Cria��o da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Desenho! -- Gabriel", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Telas! -- Gabriel", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da fun��o de callback para a janela GLFW
@@ -83,32 +83,32 @@ int main()
 	glViewport(0, 0, width, height);
 
 
-
 	// Compilando e buildando o programa de shader
 
 	Shader shader("HelloTriangle.vs","HelloTriangle.fs");
-
-	// Gerando um buffer simples, com a geometria de um triângulo
-	// Exercicio 8
-	GLuint VAO = exercicio8();
 	
 	//Habilita o shader que sera usado (glUseProgram)
 	shader.Use();
 
-	//Matriz de proje��o (paralela ortogr�fica)
+	//Criação de um objeto Sprite
+	Sprite sprite, sprite2, sprite3;
+	sprite.inicializar(glm::vec3(400.0,300.0,0.0), glm::vec3(200.0,200.0,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	sprite.setShader(&shader);
 
+	sprite2.inicializar(glm::vec3(200.0,300.0,0.0), glm::vec3(100.0,50.0,1.0));
+	sprite2.setShader(&shader);
 
-	// Exerc�cio 1 da Lista 2
-	glm::mat4 projection = glm::ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	projection = glm::translate(projection,glm::vec3(0.0f,0.0f,0.0f));
+	sprite3.inicializar(glm::vec3(600.0,300.0,0.0), glm::vec3(50.0,100.0,1.0), 0.0,glm::vec3(0.0,0.5,0.0));
+	sprite3.setShader(&shader);
 
-	// Exerc�cio 2 da Lista 2
-	//glm::mat4 projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
+	//Matriz de projeção (paralela ortográfica)
+	// Exercício 1 da Lista 2
+	//glm::mat4 projection = glm::ortho(-10.0, 10.0, -10.0, 10.0, -1.0, 1.0);
 
-
-	//Enviando para o shader via vari�vel do tipo uniform (glUniform....)
+	// Exercício 2 da Lista 2
+	glm::mat4 projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
+	//Enviando para o shader via variável do tipo uniform (glUniform....)
 	shader.setMat4("projection",glm::value_ptr(projection));
-
 	
 	// Loop da aplica��o - "game loop"
 	while (!glfwWindowShouldClose(window))
@@ -116,26 +116,33 @@ int main()
 		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as fun��es de callback correspondentes
 		glfwPollEvents();
 
+
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glLineWidth(8);
-		glPointSize(10);
+		sprite.desenhar();
+		sprite2.desenhar();
+		sprite3.desenhar();
 
-		glBindVertexArray(VAO); //Conectando ao buffer de geometria
+		bool Left,Right,Up,Down;
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);	
-		
-		glBindVertexArray(0); //Desconectando o buffer de geometria
+		Left = false;
+		Right = false;
+		Up = false;
+		Down = false;
+
+		if (Left == true)
+		{
+			projection = glm::translate(projection,glm::vec3(1.0f,0.0f,0.0f));
+		}
 
 
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
-	// Pede pra OpenGL desalocar os buffers
-	glDeleteVertexArrays(1, &VAO);
+	
 	// Finaliza a execu��o da GLFW, limpando os recursos alocados por ela
 	glfwTerminate();
 	return 0;
@@ -148,61 +155,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
 }
 
-int exercicio8()
-{
-	// Aqui setamos as coordenadas x, y e z do tri�ngulo e as armazenamos de forma
-	// sequencial, j� visando mandar para o VBO (Vertex Buffer Objects)
-	// Cada atributo do v�rtice (coordenada, cores, coordenadas de textura, normal, etc)
-	// Pode ser arazenado em um VBO �nico ou em VBOs separados
-	GLfloat vertices[] = {
-		//x   y    z    r    g    b
-
-		//triangulo 
-		0.0, 1.0, 0.0, 1.0, 0.25, 1.0, 
-		-1.0, -1.0, 0.0, 1.0, 0.25, 1.0,  
-		1.0, -1.0, 0.0, 1.0, 0.25, 1.0	
-
-	};
-
-	GLuint VBO, VAO;
-	//Gera��o do identificador do VBO
-	glGenBuffers(1, &VBO);
-	//Faz a conex�o (vincula) do buffer como um buffer de array
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//Envia os dados do array de floats para o buffer da OpenGl
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//Gera��o do identificador do VAO (Vertex Array Object)
-	glGenVertexArrays(1, &VAO);
-	// Vincula (bind) o VAO primeiro, e em seguida  conecta e seta o(s) buffer(s) de v�rtices
-	// e os ponteiros para os atributos 
-	glBindVertexArray(VAO);
-
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-	//Para cada atributo do vertice, criamos um "AttribPointer" (ponteiro para o atributo), indicando: 
-	// Localiza��o no shader * (a localiza��o dos atributos devem ser correspondentes no layout especificado no vertex shader)
-	// Numero de valores que o atributo tem (por ex, 3 coordenadas xyz) 
-	// Tipo do dado
-	// Se est� normalizado (entre zero e um)
-	// Tamanho em bytes 
-	// Deslocamento a partir do byte zero 
-
-	//Atributo layout 0 - Posi��o - 3 valores dos 6 que descrevem o v�rtice
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	//Atributo layout 1 - Cor - 3 valores dos 6 que descrevem o v�rtice
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	// Observe que isso � permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de v�rtice 
-	// atualmente vinculado - para que depois possamos desvincular com seguran�a
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-	// Desvincula o VAO (� uma boa pr�tica desvincular qualquer buffer ou array para evitar bugs medonhos)
-	glBindVertexArray(0); 
-
-	return VAO;
-}
