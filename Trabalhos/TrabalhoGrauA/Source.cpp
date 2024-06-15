@@ -114,20 +114,25 @@ int main()
 	GLuint texID = loadTexture("Textures/walk.png", imgWidth, imgHeight);
 	
 	//Criação de um objeto Sprite
-	Sprite player, coin, background;
-	player.inicializar(texID, 1, 6, glm::vec3(400.0,150.0,0.0), glm::vec3(imgWidth*2,imgHeight*2,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	Sprite player, knife, knife2, background;
+	player.inicializar(texID, 1, 8, glm::vec3(400.0,150.0,0.0), glm::vec3(imgWidth*3.5,imgHeight*3,1.0),0.0,glm::vec3(1.0,0.0,1.0));
 	player.setShader(&shader);
 	player.setShaderDebug(&shaderDebug);
 
-	texID = loadTexture("Textures/Coin.png", imgWidth, imgHeight);
+	texID = loadTexture("Textures/knife.png", imgWidth, imgHeight);
 	//Criação de um objeto Sprite
-	coin.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth/7,imgHeight/7,1.0),0.0,glm::vec3(1.0,0.0,1.0));
-	coin.setShader(&shader);
-	coin.setShaderDebug(&shaderDebug);
+	knife.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth/5,imgHeight/5,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	knife.setShader(&shader);
+	knife.setShaderDebug(&shaderDebug);
 
-	GLuint texID2 = loadTexture("Textures/Background.jpg", imgWidth, imgHeight);
+	texID = loadTexture("Textures/knife.png", imgWidth, imgHeight);
+	knife2.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth/5,imgHeight/5,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	knife2.setShader(&shader);
+	knife2.setShaderDebug(&shaderDebug);
 
-	background.inicializar(texID2, 1, 1, glm::vec3(400.0,300.0,0.0), glm::vec3(imgWidth/2,imgHeight/2,1.0),0.0,glm::vec3(0.0,1.0,1.0));
+	GLuint texID2 = loadTexture("Textures/basement.png", imgWidth, imgHeight);
+
+	background.inicializar(texID2, 1, 1, glm::vec3(400.0,300.0,0.0), glm::vec3(imgWidth/3.6,imgHeight/3	,1.0),0.0,glm::vec3(0.0,1.0,1.0));
 	background.setShader(&shader);
 	background.setShaderDebug(&shaderDebug);
 
@@ -167,12 +172,12 @@ int main()
 		}
 
 		player.getAABB();
-		coin.getAABB();
+		knife.getAABB();
 
-		if (CheckCollision(player,coin) == true)
+		if (CheckCollision(player,knife) == true)
 		{
 			cout << "Colidiu!" << endl;
-			//getchar();
+			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
 
 		// Limpa o buffer de cor
@@ -181,8 +186,10 @@ int main()
 
 		background.desenhar();
 		player.desenhar();
-		coin.moveItem();
-		coin.desenhar();
+		knife.moveItem();
+		knife.desenhar();
+		knife2.moveItem();
+		knife2.desenhar();
 
 		//timer.finish();
 
