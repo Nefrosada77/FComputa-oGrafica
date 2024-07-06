@@ -17,8 +17,8 @@
                 // Aqui você inclui o caminho para os outros arquivos .c ou .cpp
                 "${workspaceFolder}/Common/src/glad.c",  //GLAD
                 "${workspaceFolder}/Common/src/Shader.cpp", //Common
-                "${workspaceFolder}/Trabalhos/TrabalhoGrauA/Sprite.cpp",
-                "${workspaceFolder}/Trabalhos/TrabalhoGrauA/Timer.cpp",
+                "${workspaceFolder}/Trabalhos/TrabalhoGrauB/Sprite.cpp",
+                "${workspaceFolder}/Trabalhos/TrabalhoGrauB/Timer.cpp",
                 "${workspaceFolder}/Dependencies/stb_image/stb_image.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
