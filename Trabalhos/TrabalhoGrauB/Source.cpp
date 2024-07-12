@@ -52,6 +52,15 @@ const GLuint WIDTH = 600, HEIGHT = 600;
 //Variáveis globais
 
 int dir = NONE;
+bool tp = false;
+int lavaX[] = {
+		0,0,0,0,0,0,1,1,1,1,2,2,3,4,4,4,4,5,5,5,5,5,5,6,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,8,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10
+	};
+int lavaY[] = {
+		0,3,6,7,8,9,5,6,7,9,6,9,9,0,3,4,9,0,1,2,3,4,9,0,1,2,3,4,5,9,1,2,3,4,5,9,2,3,4,5,6,7,9,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
+	};
+bool keys = false;
+
 
 //Variáveis para armazenar as infos do tileset
 GLuint tilesetTexID;
@@ -75,6 +84,32 @@ void drawMap(Shader &shader);
 glm::vec2 iPos; //índice do personagem no mapa
 
 glm::vec2 posIni; //posição inicial de desenho do mapa
+
+void checarLava(int posx, int posy, int* lavaX, int* lavaY)
+	{
+		for (int i = 0; i < 60; i++)
+		{
+			if (posx == lavaX[i] && posy == lavaY[i])
+			{
+				if (dir == LEFT)
+				{
+					iPos.x +=1;
+				}
+				else if (dir == RIGHT)
+				{
+					iPos.x -=1;
+				}
+				else if (dir == UP)
+				{
+					iPos.y +=1;
+				}
+				else if (dir == DOWN)
+				{
+					iPos.y -=1;
+				}
+			}
+		}
+	}
 
 // Fun��o MAIN
 int main()
@@ -130,26 +165,58 @@ int main()
 
 
 
+
+
 	// Compilando e buildando o programa de shader
 
 	Shader shader("HelloTriangle.vs","HelloTriangle.fs");
 	Shader shaderDebug("HelloTriangle.vs","HelloTriangleDebug.fs");
 	
 	int imgWidth, imgHeight;
-	GLuint texID = loadTexture("./knight.png", imgWidth, imgHeight);
+	
 	
 	//Criação de um objeto Sprite
-	Sprite player, coin;
-	player.inicializar(texID, 1, 1, glm::vec3(400.0,150.0,0.0), glm::vec3(imgWidth*0.5,imgHeight*0.5,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	Sprite player, knife, trophy, portal1, portal2, key, keyblock, knife2;
+
+	GLuint texID = loadTexture("./isaac.png", imgWidth, imgHeight);
+	player.inicializar(texID, 1, 1, glm::vec3(400.0,150.0,0.0), glm::vec3(imgWidth*0.14,imgHeight*0.14,1.0),0.0,glm::vec3(1.0,0.0,1.0));
 	player.setShader(&shader);
 	player.setShaderDebug(&shaderDebug);
 
-	texID = loadTexture("Textures/items/Pirate-Stuff/Icon31.png", imgWidth, imgHeight);
-	//Criação de um objeto Sprite
-	coin.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*2,imgHeight*2,1.0),0.0,glm::vec3(1.0,0.0,1.0));
-	coin.setShader(&shader);
-	coin.setShaderDebug(&shaderDebug);
+	texID = loadTexture("./knife.png", imgWidth, imgHeight);
+	knife.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*0.08,imgHeight*0.08,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	knife.setShader(&shader);
+	knife.setShaderDebug(&shaderDebug);
 
+	texID = loadTexture("./knife.png", imgWidth, imgHeight);
+	knife2.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*0.08,imgHeight*0.08,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	knife2.setShader(&shader);
+	knife2.setShaderDebug(&shaderDebug);	
+
+	texID = loadTexture("./trophy.png", imgWidth,imgHeight);
+	trophy.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*0.9,imgHeight*0.7,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	trophy.setShader(&shader);
+	trophy.setShaderDebug(&shaderDebug);
+
+	texID = loadTexture("./bigbrimstoneswirl.png", imgWidth,imgHeight);
+	portal1.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*0.3,imgHeight*0.3,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	portal1.setShader(&shader);
+	portal1.setShaderDebug(&shaderDebug);
+
+	texID = loadTexture("./bigbrimstoneswirl.png", imgWidth,imgHeight);
+	portal2.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*0.3,imgHeight*0.3,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	portal2.setShader(&shader);
+	portal2.setShaderDebug(&shaderDebug);
+
+	texID = loadTexture("./key_golden.png", imgWidth,imgHeight);
+	key.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth,imgHeight,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	key.setShader(&shader);
+	key.setShaderDebug(&shaderDebug);
+
+	texID = loadTexture("./Keyblock.png", imgWidth,imgHeight);
+	keyblock.inicializar(texID, 1, 1, glm::vec3(450.0,700.0,0.0), glm::vec3(imgWidth*1.25,imgHeight*1.25,1.0),0.0,glm::vec3(1.0,0.0,1.0));
+	keyblock.setShader(&shader);
+	keyblock.setShaderDebug(&shaderDebug);
 
 	//Leitura do tilemap
 	loadMap("mapGame.txt");
@@ -177,14 +244,17 @@ int main()
 	iPos.x = 1;
 	iPos.y = 1;
 	
+
+
+
+
+
 	// Loop da aplica��o - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
 		//timer.start();
 		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as fun��es de callback correspondentes
 		glfwPollEvents();
-
-		
 
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
@@ -193,9 +263,95 @@ int main()
 		drawMap(shader);
 		float x = posIni.x + iPos.x * tileSize.x;
 		float y = posIni.y + iPos.y * tileSize.y;
+
+		trophy.setPosicao(glm::vec3(323,323,0.0));
+		trophy.desenhar();
+
+		portal1.setPosicao(glm::vec3(19,209,0.0));
+		portal1.desenhar();
+
+		portal2.setPosicao(glm::vec3(285,19,0.0));
+		portal2.desenhar();
+
 		player.setPosicao(glm::vec3(x,y,0.0)); //passa a posição baseada no indice da matriz
 		player.desenhar();
 
+		knife.setPosicao(glm::vec3(133,209,0.0));
+		knife.desenhar();
+
+		knife2.setPosicao(glm::vec3(285,285,0.0));
+		knife2.desenhar();
+
+		if (keys == false)
+		{
+			key.setPosicao(glm::vec3(361,57,0.0));
+			keyblock.setPosicao(glm::vec3(285,323,0.0));
+		}
+
+		if (keys == true)
+		{
+			keyblock.setPosicao(glm::vec3(-100,-100,-1.0));
+		}
+		
+		keyblock.desenhar();
+		key.desenhar();
+
+		if ((iPos.x == 3 && iPos.y == 5) or (iPos.x < 0) or (iPos.y < 0) or (iPos.x == 7 && iPos.y == 7))
+		{
+			iPos.x = 1;
+			iPos.y = 1;
+			keys = false;
+		}
+
+		checarLava(iPos.x,iPos.y,lavaX,lavaY);
+
+		if ((iPos.x == 0 && iPos.y == 5) && (tp == false))
+		{
+			iPos.x = 7;
+			iPos.y = 0;
+			tp = true;
+		}		
+		
+		if ((iPos.x == 7 && iPos.y == 0) && (tp == false))
+		{
+			iPos.x = 0;
+			iPos.y = 5;
+			tp = true;
+		}
+
+		if ((iPos.x == 7 && iPos.y == 8) && (keys == false))
+		{
+			if (dir == LEFT)
+			{
+					iPos.x +=1;
+			}
+			else if (dir == RIGHT)
+			{
+					iPos.x -=1;
+			}
+			else if (dir == UP)
+			{
+					iPos.y +=1;
+			}
+			else if (dir == DOWN)
+			{
+					iPos.y -=1;
+			}
+		}
+
+		if ((iPos.x == 8 && iPos.y == 8))
+		{
+			cout << "You Win" << endl;
+			glfwSetWindowShouldClose(window, GL_TRUE);
+		}
+
+		if ((iPos.x == 9 && iPos.y == 1) && keys == false)
+		{
+			cout << "Keys Unlocked" << endl;
+			keys = true;
+			key.setPosicao(glm::vec3(-100,-100,0.0));
+		}
+		
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
@@ -215,23 +371,27 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_A && action == GLFW_PRESS)
 	{
-		dir = LEFT;
+		dir = LEFT;		
 		iPos.x -= 1;
+		tp = false;
 	}
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 	{
 		dir = RIGHT;
 		iPos.x += 1;
+		tp = false;
 	}
 	if (key == GLFW_KEY_W && action == GLFW_PRESS)
 	{
-		dir = LEFT;
+		dir = UP;
 		iPos.y -= 1;
+		tp = false;
 	}
 	if (key == GLFW_KEY_S && action == GLFW_PRESS)
 	{
-		dir = RIGHT;
+		dir = DOWN;
 		iPos.y += 1;
+		tp = false;
 	}
 
 	if (action == GLFW_RELEASE)
